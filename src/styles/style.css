@@ -1,0 +1,9 @@
+* {
+  box-sizing: border-box
+}
+
+html, body {
+  font-size: 14px;
+  font-family: 'Inter UI', sans-serif;
+  background: #FFF9F9;
+}
