@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	// "time"
 
 	"github.com/gocolly/colly"
@@ -27,12 +29,12 @@ type Cinema struct {
 }
 
 type Movie struct {
-	Name        string `selector:"ul > li > div > a > span"`
-	URL         string `selector:"ul > li > div > a" attr:"href"`
-	Tags        string `selector:".genre"`
-	MTRCBRating string `selector:"ul > li > div > div > .mtrcbRating"`
-	Duration    string `selector:"ul > li > div > div > .running_time"`
-	TimeSlots   []*MovieTimeSlot
+	Name        string   `selector:"ul > li > div > a > span"`
+	URL         string   `selector:"ul > li > div > a" attr:"href"`
+	Tags        string   `selector:".genre"`
+	MTRCBRating string   `selector:"ul > li > div > div > .mtrcbRating"`
+	Duration    string   `selector:"ul > li > div > div > .running_time"`
+	TimeSlots   []string `selector:".showtimes > span"`
 }
 
 type MovieTimeSlot struct {
@@ -68,9 +70,7 @@ func main() {
 		// slots := make([]*MovieTimeSlot, 0)
 		// movie := &Movie{TimeSlots: slots}
 		cinema := &Cinema{
-			Movie: &Movie{
-				TimeSlots: make([]*MovieTimeSlot, 0),
-			},
+			Movie: &Movie{},
 		}
 		e.Unmarshal(cinema)
 		cinemas = append(cinemas, cinema)
@@ -86,12 +86,12 @@ func main() {
 	})
 
 	c.OnScraped(func(r *colly.Response) {
-		// data, err := json.Marshal(cinemas)
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		// fmt.Printf("%s\n", data)
-		fmt.Printf("%+v\n", *((*cinemas[0]).Movie))
+		data, err := json.Marshal(cinemas)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("%s\n", data)
+		// fmt.Printf("%+v\n", *((*cinemas[0]).Movie))
 	})
 
 	c.Visit("https://www.clickthecity.com/movies/theaters/lucky-chinatown-mall")
