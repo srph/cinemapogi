@@ -11,20 +11,22 @@ import (
 	"github.com/gocolly/colly"
 	"github.com/rs/cors"
 	"gopkg.in/macaron.v1"
+	"regexp"
 )
 
 type Cinema struct {
-	Name  string `selector:"h2 > a.link > em" json:"name"`
+	Name  string `json:"name"`
 	Movie *Movie `json:"movie"`
 }
 
 type Movie struct {
-	Name        string      `selector:"ul > li > div > a > span" json:"name"`
-	URL         string      `selector:"ul > li > div > a" attr:"href" json:"url"`
-	Tags        string      `selector:".genre" json:"tags"`
-	MTRCBRating string      `selector:"ul > li > div > div > .mtrcbRating" json:"mtrcbRating"`
-	Duration    string      `selector:"ul > li > div > div > .running_time" json:"duration"`
-	TimeSlots   []time.Time `selector:".showtimes > span" json:"timeslots"`
+	Name        string      `json:"name"`
+	Thumbnail   string      `json:"thumbnail"`
+	URL         string      `json:"url"`
+	Tags        string      `json:"tags"`
+	MTRCBRating string      `json:"mtrcbRating"`
+	Duration    string      `json:"duration"`
+	TimeSlots   []time.Time `json:"timeslots"`
 }
 
 func main() {
@@ -56,6 +58,8 @@ func scrape(callback func([]*Cinema)) {
 		cinema.Movie = &Movie{}
 		cinema.Movie.Name = e.ChildText("ul > li > div > a > span")
 		cinema.Movie.URL = e.ChildAttr("ul > li > div > a", "href")
+		style := e.ChildAttr("ul > li > div[itemprop='workPresented'] > div", "style")
+		cinema.Movie.Thumbnail = getThumbnailFromStyle(style)
 		cinema.Movie.MTRCBRating = e.ChildText("ul > li > div > div > .mtrcbRating")
 		cinema.Movie.Tags = e.ChildText("ul > li > div > div > .genre")
 		cinema.Movie.Duration = e.ChildText("ul > li > div > div > .running_time")
@@ -87,6 +91,11 @@ func scrape(callback func([]*Cinema)) {
 	})
 
 	c.Visit("https://www.clickthecity.com/movies/theaters/lucky-chinatown-mall")
+}
+
+func getThumbnailFromStyle(style string) string {
+	r := regexp.MustCompile("url\\((.+)\\)")
+	return strings.TrimRight(strings.TrimLeft(r.FindString(style), "url("), ")")
 }
 
 // Parse 3:00PM

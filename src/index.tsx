@@ -1,11 +1,15 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import Helmet from 'react-helmet'
-import styled from 'styled-components'
+import styled, {css} from 'styled-components'
+import UiContainer from './components/UiContainer'
+import UiNavigation from './components/UiNavigation'
 import poster from './assets/poster.jpg'
 import styles from './styles'
 import './styles/style.css'
 import 'normalize.css'
+import axios from 'axios'
+import { DateTime } from 'luxon'
 
 const UiMainWrapper = styled.div`
   min-height: 100vh;
@@ -22,51 +26,26 @@ const UiTitleHeading = styled.h1`
   font-family: ${styles['font-family-heading']};
 `
 
-const UiNavigation = styled.div`
-  background: ${styles['color-white']};
-  height: 80px;
-`
-
-const UiNavigationInner = styled.div`
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 100%;
-`
-
-const UiNavigationBranding = styled.h4`
-  margin: 0;
-  color: red;
-`
-
-const UiNavigationMenu = styled.button`
-  border: 0;
-  background: transparent;
-  outline: 0;
-  width: 32px;
-  cursor: pointer;
-`
-
-const UiNavigationMenuLine = styled.div`
-  background: red;
-  height: 4px;
-
-  &:first-child {
-    margin-bottom: 8px;
-  }
-`
-
 const UiContainer = styled.div`
   width: 998px;
   margin: 0 auto;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: 32px;
+  padding-right: 32px;
   height: 100%;
 `
 
 const Card = styled.div`
-  width: 260px;
+  text-align: center;
+  width: 50%;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-bottom: 64px;
+`
+
+const CardInner = styled.div`
+  width: 320px;
+  margin-left: auto;
+  margin-right: auto;
 `
 
 const CardThumbnail = styled.img`
@@ -86,116 +65,163 @@ const CardTags = styled.h5`
   font-size: 14px;
   font-weight: 400;
   color: ${styles['color-gray']};
-  margin-top: 0;
-  margin-bottom: 24px;
+  margin: 0;
+`
+
+const CardDetails = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
 `
 
 const CardTimestamp = styled.h6`
   font-size: 10px;
   margin: 0;
   font-weight: 400;
+  margin-bottom: 16px;
 `
 
-interface State {
-  menu: boolean
+const CardContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -16px;
+  margin-right: -16px;
+`
+
+const CardTimeSlots = styled.div`
+  display: flex;
+  justify-content: center;
+`
+
+const CardTimeSlotsItem = styled.span`
+  font-size: 10px;
+  height: 16px;
+  line-height: 15px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 2px;
+  
+  &:not(:last-child) {
+    margin-right: 4px;
+  }
+
+  ${props => props.active && css`
+    color: #155724;
+    background: #d4edda;
+    border-color: #c3e6cb;
+  `}
+
+  ${props => props.past && css`
+    opacity: 0.5;
+  `}
+`
+
+const Pakyu = styled.div`
+  margin-right: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  height: 16px;
+  line-height: 15px;
+  padding-left: 4px;
+  padding-right: 4px;
+  color: #286fbd;
+  border: 1px solid #286fbd;
+  border-radius: 2px;
+`
+
+interface Cinema {
+  name: string;
+  movie: {
+    name: string
+    thumbnail: string
+    url: string
+    tags: string
+    mtrcbRating: string;
+    duration: string;
+    timeslots: Array<string>
+  };
 }
 
-const UiNavigationOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: red;
-  padding-top: 120px;
-  padding-bottom: 120px;
-`
-
-const UiNavigationOverlayInner = styled.div`
-  display: flex;
-`
-
-const UiNavigationOverlayInnerLinks = styled.nav`
-  width: 50%;
-  padding-left: 16px;
-  margin-left: auto;
-`
-
-const UiNavigationOverlayInnerLinksItem = styled.a`
-  display: block;
-  font-size: 32px;
-  color: #fff;
-  text-decoration: none;
-  padding-left: 50%;
-
-  &:not(:last-child) {
-    margin-bottom: 24px;
-  }
-`
+interface State {
+  cinemas: Array<Cinema>;
+  isLoading: boolean;
+  isError: boolean;
+  errorMessage: string
+}
 
 class App extends React.Component<{}, State> {
-  state: State = {
-    menu: false
+  state = {
+    cinemas: [],
+    isLoading: false,
+    isError: false,
+    errorMessage: ''
+  }
+
+  async componentDidMount() {
+    this.setState({
+      isLoading: false
+    })
+
+    try {
+      const res = await axios.get('http://localhost:4000/api/cinemas')
+
+      this.setState({
+        cinemas: res.data.data,
+        isLoading: true
+      })
+    } catch(e) {
+      console.log(e)
+    }
   }
 
   render(): React.ReactNode {
+    console.log(this.state)
+
     return (
       <UiMainWrapper>
         <Helmet title="Cinemapogi" />
-
-        {this.state.menu && <UiNavigationOverlay>
-          <UiContainer>
-            <UiNavigationOverlayInner>
-              <UiNavigationOverlayInnerLinks>
-                <UiNavigationOverlayInnerLinksItem href="/">
-                  Dribbble
-                </UiNavigationOverlayInnerLinksItem>
-
-                <UiNavigationOverlayInnerLinksItem href="/">
-                  GitHub
-                </UiNavigationOverlayInnerLinksItem>
-
-                <UiNavigationOverlayInnerLinksItem href="/">
-                  @srph
-                </UiNavigationOverlayInnerLinksItem>
-
-                <UiNavigationOverlayInnerLinksItem href="/">
-                  @kaebyy
-                </UiNavigationOverlayInnerLinksItem>
-              </UiNavigationOverlayInnerLinks>
-            </UiNavigationOverlayInner>
-          </UiContainer>
-        </UiNavigationOverlay>}
-
-        <UiNavigation>
-          <UiContainer>
-            <UiNavigationInner>
-              <UiNavigationBranding>Cinemapogi</UiNavigationBranding>
-              <UiNavigationMenu onClick={this.handleToggleMenu}>
-                <UiNavigationMenuLine />
-                <UiNavigationMenuLine />
-              </UiNavigationMenu>
-            </UiNavigationInner>
-          </UiContainer>
-        </UiNavigation>
-
+        <UiNavigation />
         <UiContainer>
           <UiTitleHeading>Now Showing</UiTitleHeading>
-          <Card>
-            <CardThumbnail src={poster} alt="Poster" />
-            <CardTitle>Ant-man and the Wasp</CardTitle>
-            <CardTags>Action, Sci-Fi</CardTags>
-            <CardTimestamp>1 hour, 58 minutes</CardTimestamp>
-          </Card>
+          <CardContainer>
+            {this.state.cinemas.map((cinema: Cinema, i: number) => {
+              const now: DateTime = DateTime.local()
+
+              const activeSlotIndex: number = [...cinema.movie.timeslots].reverse().findIndex((timeslot: string) => {
+                const slot: DateTime = DateTime.fromISO(timeslot)
+                return now > slot
+              })
+
+              return <Card key={i}>
+                <CardInner>
+                  <CardThumbnail src={cinema.movie.thumbnail} alt="Poster" />
+                  <CardTitle>{cinema.movie.name}</CardTitle>
+                  <CardDetails>
+                    <Pakyu>{cinema.movie.mtrcbRating}</Pakyu>
+                    <CardTags>{cinema.movie.tags}</CardTags>
+                  </CardDetails>
+                  <CardTimestamp>{cinema.movie.duration}</CardTimestamp>
+                  
+                  <CardTimeSlots>
+                    {cinema.movie.timeslots.map((timeslot: string, i: number) => {
+                      const slot: DateTime = DateTime.fromISO(timeslot)
+                      const activeSlotIndexAccurate = (cinema.movie.timeslots.length - 1) - activeSlotIndex
+                      return <CardTimeSlotsItem
+                        past={i < activeSlotIndexAccurate}
+                        active={i === activeSlotIndexAccurate}
+                        key={i}>{slot.toFormat('h:mm a')}</CardTagsItem>
+                    })}
+                  </CardTimeSlots>
+                </CardInner>
+              </Card>
+            })}
+          </CardContainer>
         </UiContainer>
       </UiMainWrapper>
     )
-  }
-
-  public handleToggleMenu = () => {
-    this.setState({
-      menu: !this.state.menu
-    })
   }
 }
 
