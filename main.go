@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	// "time"
 
 	"github.com/gocolly/colly"
 )
@@ -27,7 +26,6 @@ type Movie struct {
 }
 
 type MovieTimeSlot struct {
-	// Time time.Time
 	Time string `selector:".showtimes > span"`
 }
 
