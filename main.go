@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"gopkg.in/macaron.v1"
-
 	"github.com/gocolly/colly"
+	"github.com/rs/cors"
+	"gopkg.in/macaron.v1"
 )
 
 type Cinema struct {
@@ -29,6 +29,7 @@ type Movie struct {
 
 func main() {
 	m := macaron.Classic()
+	m.Use(cors.Default().HandlerFunc)
 	m.Use(macaron.Logger())
 	m.Use(macaron.Recovery())
 	m.Use(macaron.Renderer())
