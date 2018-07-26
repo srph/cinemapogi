@@ -8,28 +8,47 @@ import (
 	"strings"
 	"time"
 
+	"gopkg.in/macaron.v1"
+
 	"github.com/gocolly/colly"
 )
 
 type Cinema struct {
-	Name  string `selector:"h2 > a.link > em"`
-	Movie *Movie
+	Name  string `selector:"h2 > a.link > em" json:"name"`
+	Movie *Movie `json:"movie"`
 }
 
 type Movie struct {
-	Name        string      `selector:"ul > li > div > a > span"`
-	URL         string      `selector:"ul > li > div > a" attr:"href"`
-	Tags        string      `selector:".genre"`
-	MTRCBRating string      `selector:"ul > li > div > div > .mtrcbRating"`
-	Duration    string      `selector:"ul > li > div > div > .running_time"`
-	TimeSlots   []time.Time `selector:".showtimes > span"`
+	Name        string      `selector:"ul > li > div > a > span" json:"name"`
+	URL         string      `selector:"ul > li > div > a" attr:"href" json:"url"`
+	Tags        string      `selector:".genre" json:"tags"`
+	MTRCBRating string      `selector:"ul > li > div > div > .mtrcbRating" json:"mtrcbRating"`
+	Duration    string      `selector:"ul > li > div > div > .running_time" json:"duration"`
+	TimeSlots   []time.Time `selector:".showtimes > span" json:"timeslots"`
 }
 
-type MovieTimeSlot struct {
-	Time string `selector:".showtimes > span"`
-}
+// type MovieTimeSlot struct {
+// 	Time string `selector:".showtimes > span"`
+// }
 
 func main() {
+	m := macaron.Classic()
+	m.Use(macaron.Logger())
+	m.Use(macaron.Recovery())
+	m.Use(macaron.Renderer())
+	m.Group("/api", func() {
+		m.Get("/cinemas", func(ctx *macaron.Context) {
+			scrape(func(data []*Cinema) {
+				ctx.JSON(200, map[string]interface{}{
+					"data": data,
+				})
+			})
+		})
+	})
+	m.Run()
+}
+
+func scrape(callback func([]*Cinema)) {
 	cinemas := make([]*Cinema, 0)
 
 	c := colly.NewCollector()
@@ -67,6 +86,7 @@ func main() {
 		}
 		fmt.Printf("%s\n", data)
 		// fmt.Printf("%+v\n", *((*cinemas[0]).Movie))
+		callback(cinemas)
 	})
 
 	c.Visit("https://www.clickthecity.com/movies/theaters/lucky-chinatown-mall")
