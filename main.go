@@ -27,10 +27,6 @@ type Movie struct {
 	TimeSlots   []time.Time `selector:".showtimes > span" json:"timeslots"`
 }
 
-// type MovieTimeSlot struct {
-// 	Time string `selector:".showtimes > span"`
-// }
-
 func main() {
 	m := macaron.Classic()
 	m.Use(macaron.Logger())
