@@ -197,7 +197,7 @@ class App extends React.Component<{}, State> {
                 return DateTime.fromISO(timeslot)
               })
 
-              const activeSlotIndex: number = findLastIndex(timeslots, (timeslot) => {
+              const activeSlotIndex: number = findLastIndex(timeslots, (timeslot: DateTime) => {
                 return now > timeslot
               })
 
