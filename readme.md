@@ -3,7 +3,14 @@ Sinepogi a fresh-looking viewer for Resorts World Manila's online cinema, design
 
 Designed by [Kirby Borromeo](https://dribbble.com/kbyborromeo).
 
-### Contributing
+## Tooling
+- Typescript
+- Parcel
+- React
+- Go
+- Macaron
+
+## Contributing
 #### Requirements
 - Go `>=1.8`
 - Node `>=10` & npm `>=5`
