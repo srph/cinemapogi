@@ -12,6 +12,7 @@ import 'normalize.css'
 import axios from 'axios'
 import { DateTime } from 'luxon'
 import findLastIndex from 'find-last-index-x'
+import config from './config'
 
 const UiMainWrapper = styled.div`
   min-height: 100vh;
@@ -184,8 +185,21 @@ class App extends React.Component<{}, State> {
 
     return (
       <UiModal.Provider>
+        <Helmet
+          title={config.title}
+          meta={[
+            { property: 'og:site_name', content: config.title },
+            { property: 'og:type', content: 'website' },
+            { name: 'keywords', content: config.keywords.join(', ') },
+            { property: 'og:url', content: 'https://sinepogi.kierb.com' },
+            { name: 'title', content: config.title },
+            { property: 'og:title', content: config.title },
+            { name: 'description', content: config.description },
+            { property: 'og:description', content: config.description },
+            { property: 'twitter:card', content: config.description },
+          ]}
+        />
         <UiMainWrapper>
-          <Helmet title="Cinemapogi" />
           <UiNavigation />
           <UiContainer>
             <UiTitleHeading>Now Showing</UiTitleHeading>
