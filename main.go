@@ -66,6 +66,7 @@ func scrape(callback func([]*Cinema)) {
 		cinema.Movie.TimeSlots = make([]time.Time, 0)
 		e.ForEach(".showtimes > span", func(i int, e *colly.HTMLElement) {
 			slot := nowWithGivenTime(e.Text)
+			fmt.Println(slot, e.Text)
 			cinema.Movie.TimeSlots = append(cinema.Movie.TimeSlots, slot)
 		})
 		cinemas = append(cinemas, cinema)
@@ -105,7 +106,7 @@ func parseTime(t string) (int, int) {
 	period := split[1]
 	timeSplit := strings.Split(time, ":")
 	var hour int
-	if period == "am" {
+	if strings.ToLower(period) == "am" {
 		hour = 0
 	} else {
 		hour = 12
