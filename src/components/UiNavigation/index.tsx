@@ -62,7 +62,7 @@ const NavigationOverlayInner = styled.div`
 `
 
 const NavigationOverlayDescription = styled.div`
-  width: 50%;
+  width: 75%;
   padding-right: 16px;
   color: #fff;
 `
@@ -80,7 +80,7 @@ const NavigationOverlayDescriptionSubText = styled.p`
 `
 
 const NavigationOverlayInnerLinks = styled.nav`
-  width: 50%;
+  width: 25%;
   padding-left: 16px;
   padding-right: 16px;
   margin-left: auto;
