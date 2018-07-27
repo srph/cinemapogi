@@ -184,47 +184,47 @@ class App extends React.Component<{}, State> {
 
     return (
       <UiModal.Provider>
-      <UiMainWrapper>
-        <Helmet title="Cinemapogi" />
-        <UiNavigation />
-        <UiContainer>
-          <UiTitleHeading>Now Showing</UiTitleHeading>
-          <CardContainer>
-            {this.state.cinemas.map((cinema: Cinema, i: number) => {
-              const now: DateTime = DateTime.local()
+        <UiMainWrapper>
+          <Helmet title="Cinemapogi" />
+          <UiNavigation />
+          <UiContainer>
+            <UiTitleHeading>Now Showing</UiTitleHeading>
+            <CardContainer>
+              {this.state.cinemas.map((cinema: Cinema, i: number) => {
+                const now: DateTime = DateTime.local()
 
-              const timeslots: Array<DateTime> = cinema.movie.timeslots.map((timeslot: string) => {
-                return DateTime.fromISO(timeslot)
-              })
+                const timeslots: Array<DateTime> = cinema.movie.timeslots.map((timeslot: string) => {
+                  return DateTime.fromISO(timeslot)
+                })
 
-              const activeSlotIndex: number = findLastIndex(timeslots, (timeslot: DateTime) => {
-                return now > timeslot
-              })
+                const activeSlotIndex: number = findLastIndex(timeslots, (timeslot: DateTime) => {
+                  return now > timeslot
+                })
 
-              return <Card key={i}>
-                <CardInner>
-                  <CardThumbnail src={cinema.movie.thumbnail} alt="Poster" />
-                  <CardTitle>{cinema.movie.name}</CardTitle>
-                  <CardDetails>
-                    <Pakyu>{cinema.movie.mtrcbRating}</Pakyu>
-                    <CardTags>{cinema.movie.tags}</CardTags>
-                  </CardDetails>
-                  <CardTimestamp>{cinema.movie.duration}</CardTimestamp>
-                  
-                  <CardTimeSlots>
-                    {timeslots.map((timeslot: DateTime, i: number) => {
-                      return <CardTimeSlotsItem
-                        past={i < activeSlotIndex}
-                        active={i === activeSlotIndex}
-                        key={i}>{timeslot.toFormat('h:mm a')}</CardTagsItem>
-                    })}
-                  </CardTimeSlots>
-                </CardInner>
-              </Card>
-            })}
-          </CardContainer>
-        </UiContainer>
-      </UiMainWrapper>
+                return <Card key={i}>
+                  <CardInner>
+                    <CardThumbnail src={cinema.movie.thumbnail} alt="Poster" />
+                    <CardTitle>{cinema.movie.name}</CardTitle>
+                    <CardDetails>
+                      <Pakyu>{cinema.movie.mtrcbRating}</Pakyu>
+                      <CardTags>{cinema.movie.tags}</CardTags>
+                    </CardDetails>
+                    <CardTimestamp>{cinema.movie.duration}</CardTimestamp>
+                    
+                    <CardTimeSlots>
+                      {timeslots.map((timeslot: DateTime, i: number) => {
+                        return <CardTimeSlotsItem
+                          past={i < activeSlotIndex}
+                          active={i === activeSlotIndex}
+                          key={i}>{timeslot.toFormat('h:mm a')}</CardTagsItem>
+                      })}
+                    </CardTimeSlots>
+                  </CardInner>
+                </Card>
+              })}
+            </CardContainer>
+          </UiContainer>
+        </UiMainWrapper>
       </UiModal.Provider>
     )
   }
