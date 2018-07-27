@@ -53,9 +53,28 @@ const NavigationOverlayInner = styled.div`
   display: flex;
 `
 
+const NavigationOverlayDescription = styled.div`
+  width: 50%;
+  padding-right: 16px;
+  color: #fff;
+`
+
+const NavigationOverlayDescriptionText = styled.p`
+  font-size: 36px;
+  line-height: 1.5;
+  margin-top: 0;
+  margin-bottom: 16px;
+`
+
+const NavigationOverlayDescriptionSubText = styled.p`
+  font-size: 14px;
+  margin: 0;
+`
+
 const NavigationOverlayInnerLinks = styled.nav`
   width: 50%;
   padding-left: 16px;
+  padding-right: 16px;
   margin-left: auto;
 `
 
@@ -86,6 +105,14 @@ class UiNavigation extends React.Component<{}, State> {
         {this.state.menu && <NavigationOverlay>
           <UiContainer>
             <NavigationOverlayInner>
+              <NavigationOverlayDescription>
+                <NavigationOverlayDescriptionText>
+                  <strong>Cinemapogi</strong> is a fresh-looking viewer for Resorts World Manila's online cinema, designed to make browsing more convenient.
+                </NavigationOverlayDescriptionText>
+                <NavigationOverlayDescriptionSubText>
+                  Designed by Kirby Borromeo. Developed by Kier Borromeo.
+                </NavigationOverlayDescriptionSubText>
+              </NavigationOverlayDescription>
               <NavigationOverlayInnerLinks>
                 <NavigationOverlayInnerLinksItem href="/">
                   Dribbble
