@@ -210,7 +210,7 @@ class App extends React.Component<{}, State> {
                   <CardTimestamp>{cinema.movie.duration}</CardTimestamp>
                   
                   <CardTimeSlots>
-                    {timeslots.map((timeslot: string, i: number) => {
+                    {timeslots.map((timeslot: DateTime, i: number) => {
                       return <CardTimeSlotsItem
                         past={i < activeSlotIndex}
                         active={i === activeSlotIndex}
