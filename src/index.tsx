@@ -10,6 +10,7 @@ import './styles/style.css'
 import 'normalize.css'
 import axios from 'axios'
 import { DateTime } from 'luxon'
+import findLastIndex from 'find-last-index-x'
 
 const UiMainWrapper = styled.div`
   min-height: 100vh;
@@ -190,9 +191,12 @@ class App extends React.Component<{}, State> {
             {this.state.cinemas.map((cinema: Cinema, i: number) => {
               const now: DateTime = DateTime.local()
 
-              const activeSlotIndex: number = [...cinema.movie.timeslots].reverse().findIndex((timeslot: string) => {
-                const slot: DateTime = DateTime.fromISO(timeslot)
-                return now > slot
+              const timeslots: Array<DateTime> = cinema.movie.timeslots.map((timeslot: string) => {
+                return DateTime.fromISO(timeslot)
+              })
+
+              const activeSlotIndex: number = findLastIndex(timeslots, (timeslot) => {
+                return now > timeslot
               })
 
               return <Card key={i}>
@@ -206,13 +210,11 @@ class App extends React.Component<{}, State> {
                   <CardTimestamp>{cinema.movie.duration}</CardTimestamp>
                   
                   <CardTimeSlots>
-                    {cinema.movie.timeslots.map((timeslot: string, i: number) => {
-                      const slot: DateTime = DateTime.fromISO(timeslot)
-                      const activeSlotIndexAccurate = (cinema.movie.timeslots.length - 1) - activeSlotIndex
+                    {timeslots.map((timeslot: string, i: number) => {
                       return <CardTimeSlotsItem
-                        past={i < activeSlotIndexAccurate}
-                        active={i === activeSlotIndexAccurate}
-                        key={i}>{slot.toFormat('h:mm a')}</CardTagsItem>
+                        past={i < activeSlotIndex}
+                        active={i === activeSlotIndex}
+                        key={i}>{timeslot.toFormat('h:mm a')}</CardTagsItem>
                     })}
                   </CardTimeSlots>
                 </CardInner>
