@@ -4,6 +4,7 @@ import Helmet from 'react-helmet'
 import styled, {css} from 'styled-components'
 import UiContainer from './components/UiContainer'
 import UiNavigation from './components/UiNavigation'
+import UiModal from './components/UiModal'
 import poster from './assets/poster.jpg'
 import styles from './styles'
 import './styles/style.css'
@@ -182,6 +183,7 @@ class App extends React.Component<{}, State> {
     console.log(this.state)
 
     return (
+      <UiModal.Provider>
       <UiMainWrapper>
         <Helmet title="Cinemapogi" />
         <UiNavigation />
@@ -223,6 +225,7 @@ class App extends React.Component<{}, State> {
           </CardContainer>
         </UiContainer>
       </UiMainWrapper>
+      </UiModal.Provider>
     )
   }
 }

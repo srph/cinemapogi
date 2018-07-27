@@ -1,5 +1,6 @@
 import * as React from 'react'
 import UiContainer from '../UiContainer'
+import UiModal from '../UiModal'
 import styled from 'styled-components'
 import styles from '../../styles'
 
@@ -38,15 +39,22 @@ const NavigationMenuLine = styled.div`
   }
 `
 
-const NavigationOverlay = styled.div`
+const NavigationOverlayModal = styled(props => {
+  return <UiModal {...props} backdropClassName={props.className} modalClassName='modal' />
+})`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: red;
-  padding-top: 120px;
-  padding-bottom: 120px;
+  overflow: hidden;
+
+  .modal {
+    padding-top: 120px;
+    padding-bottom: 120px;
+    outline: 0;
+  }
 `
 
 const NavigationOverlayInner = styled.div`
@@ -102,7 +110,7 @@ class UiNavigation extends React.Component<{}, State> {
   render(): React.ReactNode {
     return (
       <>
-        {this.state.menu && <NavigationOverlay>
+        {this.state.menu && <NavigationOverlayModal onClose={this.handleToggleMenu} closeOnBackdropClick={false}>
           <UiContainer>
             <NavigationOverlayInner>
               <NavigationOverlayDescription>
@@ -132,7 +140,7 @@ class UiNavigation extends React.Component<{}, State> {
               </NavigationOverlayInnerLinks>
             </NavigationOverlayInner>
           </UiContainer>
-        </NavigationOverlay>}
+        </NavigationOverlayModal>}
 
         <Navigation>
           <UiContainer>
