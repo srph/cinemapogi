@@ -171,7 +171,7 @@ const Pakyu = styled.div`
   line-height: 22px;
   padding-left: 8px;
   padding-right: 8px;
-  color: #fff;g
+  color: #fff;
   border-radius: 2px;
   background: linear-gradient(90deg, #70B3FF, #0869D8);
 
