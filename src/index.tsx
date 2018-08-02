@@ -157,6 +157,10 @@ const CardTimeSlotsItem = styled.span`
   `}
 `
 
+interface PakyuProps {
+  type: 'g' | 'pg' | 'pg-13' | 'spg' | 'r-13' | 'r-16' | 'r-18'
+}
+
 const Pakyu = styled.div`
   position: absolute;
   bottom: 12px;
@@ -169,7 +173,23 @@ const Pakyu = styled.div`
   padding-right: 8px;
   color: #fff;g
   border-radius: 2px;
-  background: linear-gradient(-90deg, #0869D8, #70B3FF);
+  background: linear-gradient(90deg, #70B3FF, #0869D8);
+
+  ${(props: PakyuProps) => props.type === 'pg-13' && css`
+    background: linear-gradient(90deg, #0869d8, #002dab);
+  `}
+
+  ${(props: PakyuProps) => props.type === 'spg' || props.type === 'r-18' && css`
+    background: linear-gradient(90deg, #cc2331, #ff253a);
+  `}
+
+  ${(props: PakyuProps) => props.type === 'r-13' && css`
+    background: linear-gradient(90deg, #FFD73F, #a58200);
+  `}
+
+  ${(props: PakyuProps) => props.type === 'r-16' && css`
+    background: linear-gradient(90deg, #ffa03f, #b96612);
+  `}
 `
 
 interface Cinema {
@@ -262,7 +282,7 @@ class App extends React.Component<{}, State> {
                           {cinema.movie.duration}
                         </CardTimestamp>
                       </CardTimestampWrapper>
-                      <Pakyu>{cinema.movie.mtrcbRating}</Pakyu>
+                      <Pakyu type={cinema.movie.mtrcbRating.toLowerCase()}>{cinema.movie.mtrcbRating}</Pakyu>
                     </CardThumbnailWrapper>
 
                     <CardDetails>
