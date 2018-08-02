@@ -48,7 +48,7 @@ const NavigationOverlayModal = styled(props => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: red;
+  background: ${styles['color-maroon']};
   overflow: hidden;
 
   .modal {
