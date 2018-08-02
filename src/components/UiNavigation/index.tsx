@@ -28,10 +28,11 @@ const NavigationMenu = styled.button`
   outline: 0;
   width: 32px;
   cursor: pointer;
+  padding: 0;
 `
 
 const NavigationMenuLine = styled.div`
-  background: red;
+  background: ${styles['color-maroon']};
   height: 4px;
 
   &:first-child {
