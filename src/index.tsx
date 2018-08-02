@@ -167,7 +167,7 @@ const Pakyu = styled.div`
   line-height: 22px;
   padding-left: 8px;
   padding-right: 8px;
-  color: #fff;
+  color: #fff;g
   border-radius: 2px;
   background: linear-gradient(-90deg, #0869D8, #70B3FF);
 `
@@ -218,8 +218,6 @@ class App extends React.Component<{}, State> {
   }
 
   render(): React.ReactNode {
-    console.log(this.state)
-
     return (
       <UiModal.Provider>
         <Helmet
