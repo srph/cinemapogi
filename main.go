@@ -29,6 +29,8 @@ type Movie struct {
 	TimeSlots   []time.Time `json:"timeslots"`
 }
 
+var cinemas []*Cinema
+
 func main() {
 	m := macaron.Classic()
 	m.Use(cors.Default().HandlerFunc)
@@ -48,7 +50,12 @@ func main() {
 }
 
 func scrape(callback func([]*Cinema)) {
-	cinemas := make([]*Cinema, 0)
+	if len(cinemas) > 0 {
+		callback(cinemas)
+		return
+	}
+
+	cinemas = make([]*Cinema, 0)
 
 	c := colly.NewCollector()
 
