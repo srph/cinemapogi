@@ -175,6 +175,10 @@ const Pakyu = styled.div`
   border-radius: 2px;
   background: linear-gradient(90deg, #70B3FF, #0869D8);
 
+  ${(props: PakyuProps) => props.type === 'g' && css`
+    background: linear-gradient(90deg, #8dff70, #08d85b);
+  `}
+
   ${(props: PakyuProps) => props.type === 'pg-13' && css`
     background: linear-gradient(90deg, #0869d8, #002dab);
   `}
