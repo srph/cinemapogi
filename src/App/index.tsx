@@ -228,11 +228,12 @@ interface Branch {
 
 interface State {
   branches: Array<Branch>;
+  schedules: Array<{}>;
   cinemas: Array<{}>;
-  selectedBranch: Branch;
+  selectedBranch: ?number;
   selectedDate: string;
   isLoadingBranches: boolean;
-  isLodaingMovies: boolean;
+  isLoadingSchedules: boolean;
   isError: boolean;
   errorMessage: string
 }
@@ -240,52 +241,57 @@ interface State {
 class App extends React.Component<{}, State> {
   state = {
     branches: [],
-    movies: [],
+    schedules: [],
     cinemas: [],
     selectedBranch: null,
     selectedDate: DateTime.local().toFormat('y-LL-dd'),
     isLoadingBranches: false,
-    isLoadingMovies: false,
+    isLoadingSchedules: false,
     isError: false,
     errorMessage: ''
   }
 
   async componentDidMount() {
-    // this.setState({
-    //   isLoading: false
-    // })
+    await this.fetchBranches()
+    await this.fetchSchedules()
+  }
 
-    // try {
-    //   const res = await axios.get('http://localhost:4000/api/cinemas')
-
-    //   this.setState({
-    //     cinemas: res.data.data,
-    //     isLoading: true
-    //   })
-    // } catch(e) {
-    //   console.log(e)
-    // }
-
+  fetchBranches = async () => {
     let res
 
     this.setState({
       isLoadingBranches: true
     })
-
+    
     try {
-      res = await axios.get('https://localhost:4000/api/branches')
+      res = await axios.get('/api/branches')
     } catch(e) {
       console.log(e)
-      return
     }
 
     this.setState({
-      selectedBranch: res.data.BranchList[0].Branch_Key,
-      branches: res.data.BranchList.map((branch: Branch) => ({
-        name: branch.Branch_Name,
-        key: branch.Branch_Key,
-        code: branch.Branch_Code
-      }))
+      isLoadingBranches: false,
+      selectedBranch: res.data.data.branchlist[0].branch_key,
+      branches: res.data.data.branchlist
+    })
+  }
+
+  fetchSchedules = async () => {
+    let res
+
+    this.setState({
+      isLoadingSchedules: true
+    })
+
+    try {
+      res = await axios.get('/api/schedules')
+    } catch(e) {
+      console.log(e)
+    }
+
+    this.setState({
+      isLoadingSchedules: false,
+      schedules: res.data.data
     })
   }
 
@@ -314,7 +320,7 @@ class App extends React.Component<{}, State> {
             <Controls>
               <ControlsItem>
                 <UiDropdown options={this.state.branches.map((branch: Branch) => {
-                  return { label: branch.name, value: branch.code }
+                  return { label: branch.branch_name, value: branch.branch_code }
                 })} value={this.state.selectedBranch} isLoading={this.state.isLoadingBranches} onChange={(evt: HTMLEvent) => {
                   this.setState({ selectedDate: evt.target.value })
                 }} />

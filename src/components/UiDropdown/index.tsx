@@ -29,7 +29,7 @@ class UiDropdown extends React.Component<Props> {
 
   render(): React.ReactNode {
     return (
-      <ui.Select value={this.props.value} onChange={this.props.onChange}>
+      <ui.Select value={this.props.value || ''} onChange={this.props.onChange}>
         {this.props.isLoading && (
           <option>Loading...</option>
         )}

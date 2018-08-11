@@ -7,5 +7,9 @@ export default {
     'movies',
     'blockbusterseats',
     'cinema'
-  ]
+  ],
+  api: {
+    // base: 'https://api-sinepogi.kierb.com' || process.env.API_HOST
+    base: 'http://localhost:4000' || process.env.API_HOST
+  }
 }
