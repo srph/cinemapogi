@@ -1,29 +1,25 @@
 package utils
 
-// Flatten a deepnly nested array into a flat array.
-// https://gist.github.com/JekaMas/55f9eb2c4980b5054341f65cb128b1cb
-func Flatten(arr interface{}) ([]int, error) {
-	return doFlatten([]int{}, arr)
+import (
+	"reflect"
+)
+
+func Flatten(arr interface{}) interface{} {
+	acc := make([]interface{}, 0)
+	return doFlatten(acc, arr)
 }
 
-func doFlatten(acc []int, arr interface{}) ([]int, error) {
-	var err error
-
-	switch v := arr.(type) {
-	case []int:
-		acc = append(acc, v...)
-	case int:
-		acc = append(acc, v)
-	case []interface{}:
-		for i := range v {
-			acc, err = doFlatten(acc, v[i])
-			if err != nil {
-				return nil, errors.New("not int or []int given")
-			}
+func doFlatten(acc interface{}, arr interface{}) interface{} {
+	typed := arr.([]interface{})
+	for _, val := range typed {
+		switch reflect.TypeOf(val).Kind() {
+		case reflect.Slice:
+		case reflect.Array:
+			doFlatten(acc, val)
+		default:
+			acc = append(typed, val)
+			break
 		}
-	default:
-		return nil, errors.New("not int given")
 	}
-
-	return acc, nil
+	return acc
 }

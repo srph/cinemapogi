@@ -11,8 +11,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"text/template"
-
-	"./packages/pasnake"
+	// "./packages/pasnake"
 )
 
 func main() {
